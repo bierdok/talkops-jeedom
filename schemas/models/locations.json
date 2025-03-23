@@ -1,0 +1,21 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "description": "The location unique identifier"
+      },
+      "name": {
+        "type": "string",
+        "description": "The location name"
+      },
+      "location_id": {
+        "type": "integer",
+        "description": "The parent location identifier"
+      }
+    },
+    "required": ["id", "name"]
+  }
+}
