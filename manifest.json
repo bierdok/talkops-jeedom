@@ -1,27 +1,14 @@
 {
-  "categories": [
-    "Home Automation"
-  ],
-  "dockerRepository": "bierdok/talkops-jeedom",
-  "features": [
-    "Lights: Check status, turn on/off",
-    "Shutters: Check status, open, close and stop"
-  ],
-  "icon": "https://play-lh.googleusercontent.com/Qvlo7g0AtFOCmFlMw_bd6QpYtmL0r7wMwYUWg_g5vX5C80NMf57xNp0Al9y4M2tnpGo",
-  "installationSteps": [
-    "Open Jeedom from a web browser with admin permissions.",
-    "Navigate to `Settings → System → Configuration`.",
-    "Select the `APIs` tab and `Enabled` the API access related to API key.",
-    "Copy the API key to setup the environment variable `API_KEY`.",
-    "Install and enable the plugin [Virtual](https://market.jeedom.com/index.php?v=d&p=market_display&id=21) from the Jeedom Market.",
-    "Create the virtual equipments with the basic templates `Lumière` and `Volet`.",
-    "Map the virtual equipments states on real equipments."
-  ],
+  "categories": [],
+  "dockerRepository": null,
+  "features": [],
+  "icon": null,
+  "installationSteps": [],
   "name": "Jeedom",
   "sdk": {
     "name": "nodejs",
     "version": "2.3.5"
   },
-  "version": "1.0.0",
+  "version": null,
   "website": "https://jeedom.com/"
 }
