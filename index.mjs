@@ -1,5 +1,4 @@
 import { Extension, Parameter } from 'talkops'
-import pkg from './package.json' with { type: 'json' }
 
 const baseUrl = new Parameter('BASE_URL')
   .setDescription('The base URL of your Jeedom server.')
@@ -14,8 +13,6 @@ const extension = new Extension()
   .setIcon(
     'https://play-lh.googleusercontent.com/Qvlo7g0AtFOCmFlMw_bd6QpYtmL0r7wMwYUWg_g5vX5C80NMf57xNp0Al9y4M2tnpGo',
   )
-  .setVersion(pkg.version)
-  .setDockerRepository('bierdok/talkops-jeedom')
   .setFeatures([
     'Lights: Check status, turn on/off',
     'Shutters: Check status, open, close and stop',
