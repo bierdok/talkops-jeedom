@@ -3,8 +3,9 @@ import { Extension, Parameter } from 'talkops'
 const baseUrl = new Parameter('BASE_URL')
   .setDescription('The base URL of your Jeedom server.')
   .setPossibleValues(['http://jeedom', 'https://jeedom.mydomain.net'])
+  .setType('url')
 
-const apiKey = new Parameter('API_KEY').setDescription('The copied API key.')
+const apiKey = new Parameter('API_KEY').setDescription('The copied API key.').setType('password')
 
 const extension = new Extension()
   .setName('Jeedom')
@@ -162,7 +163,6 @@ async function refresh() {
 
   setTimeout(refresh, 5000)
 }
-refresh()
 
 extension.setFunctions([
   async function update_lights(action, ids) {
@@ -192,3 +192,5 @@ extension.setFunctions([
     }
   },
 ])
+
+extension.setBootstrap(refresh)
