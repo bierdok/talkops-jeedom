@@ -10,7 +10,7 @@ const apiKey = new Parameter('API_KEY').setDescription('The copied API key.').se
 const extension = new Extension()
   .setName('Jeedom')
   .setWebsite('https://jeedom.com/')
-  .setCategory('Home Automation')
+  .setCategory('home_automation')
   .setIcon(
     'https://play-lh.googleusercontent.com/Qvlo7g0AtFOCmFlMw_bd6QpYtmL0r7wMwYUWg_g5vX5C80NMf57xNp0Al9y4M2tnpGo',
   )
