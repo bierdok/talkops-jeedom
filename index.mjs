@@ -63,7 +63,7 @@ const getPlugins = async () => {
     const response = await request('plugin::listPlugin')
     return response.data.result
   } catch (err) {
-    extension.addError(err.message)
+    console.error(err.message)
   }
   return []
 }
@@ -73,7 +73,7 @@ const getVersion = async () => {
     const response = await request('version')
     return response.data.result
   } catch (err) {
-    extension.addError(err.message)
+    console.error(err.message)
   }
   return null
 }
@@ -83,7 +83,7 @@ const getObjects = async () => {
     const response = await request('jeeObject::full')
     return response.data.result
   } catch (err) {
-    extension.addError(err.message)
+    console.error(err.message)
   }
   return []
 }
@@ -93,11 +93,10 @@ async function refresh() {
   const locations = []
   const lights = []
   const shutters = []
-  extension.clearErrors()
   const plugins = await getPlugins()
   const hasPlugin = plugins.some((plugin) => plugin.id === 'virtual' && plugin.source === 'market')
   if (!hasPlugin) {
-    extension.addError('The plugin "Virtual" from the Jeedom Market must be installed and enabled.')
+    console.error('The plugin "Virtual" from the Jeedom Market must be installed and enabled.')
   }
   extension.setSoftwareVersion(await getVersion())
   const objects = await getObjects()
