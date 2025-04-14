@@ -22,7 +22,7 @@ const extension = new Extension()
     'Open Jeedom from a web browser with admin permissions.',
     'Navigate to \`Settings → System → Configuration\`.',
     'Select the \`APIs\` tab and \`Enabled\` the API access related to API key.',
-    'Copy the API key to setup the environment variable \`API_KEY\`.',
+    'Copy the API key to setup the parameter or the environment variable \`API_KEY\`.',
     'Install and enable the plugin [Virtual](https://market.jeedom.com/index.php?v=d&p=market_display&id=21) from the Jeedom Market.',
     'Create the virtual equipments with the basic templates \`Lumière\` and \`Volet\`.',
     'Map the virtual equipments states on real equipments.',
