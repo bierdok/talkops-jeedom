@@ -30,6 +30,7 @@ const extension = new Extension()
     'Map the virtual equipments states on real equipments.',
   ])
   .setParameters([baseUrl, apiKey])
+  .start()
 
 const baseInstructions = `
 You are a home automation assistant, focused solely on managing connected devices in the home.
