@@ -11,6 +11,6 @@
     "name": "nodejs",
     "version": "2.15.0"
   },
-  "softwareVersion": "4.4.19",
+  "softwareVersion": null,
   "website": "https://jeedom.com/"
 }
