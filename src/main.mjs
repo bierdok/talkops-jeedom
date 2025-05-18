@@ -42,12 +42,12 @@ Currently, there is no connected devices.
 Your sole task is to ask the user to install one or more connected devices in the home before proceeding.
 `
 
-import locationsModel from './src/models/locations.json' with { type: 'json' }
-import lightsModel from './src/models/lights.json' with { type: 'json' }
-import shuttersModel from './src/models/shutters.json' with { type: 'json' }
+import locationsModel from './models/locations.json' with { type: 'json' }
+import lightsModel from './models/lights.json' with { type: 'json' }
+import shuttersModel from './models/shutters.json' with { type: 'json' }
 
-import updateLightsFunction from './src/functions/update_lights.json' with { type: 'json' }
-import updateShuttersFunction from './src/functions/update_shutters.json' with { type: 'json' }
+import updateLightsFunction from './functions/update_lights.json' with { type: 'json' }
+import updateShuttersFunction from './functions/update_shutters.json' with { type: 'json' }
 
 async function request(method, params) {
   return await axios.post(`${baseUrl.getValue()}/core/api/jeeApi.php`, {
