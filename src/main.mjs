@@ -96,16 +96,6 @@ const getPlugins = async () => {
   return []
 }
 
-const getVersion = async () => {
-  try {
-    const response = await request('version')
-    return response.data.result
-  } catch (err) {
-    console.error(err.message)
-  }
-  return null
-}
-
 const getObjects = async () => {
   try {
     const response = await request('jeeObject::full')
@@ -129,7 +119,6 @@ async function updateMemory() {
   if (!hasPlugin) {
     console.error('The plugin "Virtual" from the Jeedom Market must be installed and enabled.')
   }
-  extension.setSoftwareVersion(await getVersion())
   const objects = await getObjects()
   for (const object of objects) {
     locations.push({
