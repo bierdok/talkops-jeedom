@@ -87,95 +87,92 @@ async function request(method, params) {
 }
 
 const getPlugins = async () => {
-  try {
-    const response = await request('plugin::listPlugin')
-    return response.data.result
-  } catch (err) {
-    console.error(err.message)
-  }
-  return []
+  const response = await request('plugin::listPlugin')
+  return response.data.result
 }
 
 const getObjects = async () => {
-  try {
-    const response = await request('jeeObject::full')
-    return response.data.result
-  } catch (err) {
-    console.error(err.message)
-  }
-  return []
+  const response = await request('jeeObject::full')
+  return response.data.result
 }
 
 const cmds = new Map()
 
 let updateMemoryTimeout = null
 async function updateMemory() {
-  updateMemoryTimeout && clearTimeout(updateMemoryTimeout)
-  const locations = []
-  const lights = []
-  const shutters = []
-  const plugins = await getPlugins()
-  const hasPlugin = plugins.some((plugin) => plugin.id === 'virtual' && plugin.source === 'market')
-  if (!hasPlugin) {
-    console.error('The plugin "Virtual" from the Jeedom Market must be installed and enabled.')
-  }
-  const objects = await getObjects()
-  for (const object of objects) {
-    locations.push({
-      id: object.id,
-      name: object.name,
-      location_id: object.father_id,
-    })
-    if (!object.eqLogics.length) continue
-    for (const equipement of object.eqLogics) {
-      if (equipement.eqType_name !== 'virtual') continue
-      cmds.set(equipement.id, equipement.cmds)
-      for (const cmd of equipement.cmds) {
-        if (cmd.generic_type === 'LIGHT_STATE') {
-          lights.push({
-            id: equipement.id,
-            name: equipement.name,
-            state: cmd.state ? 'on' : 'off',
-            location_id: equipement.object_id,
-          })
-        }
-        if (cmd.generic_type === 'FLAP_STATE') {
-          shutters.push({
-            id: equipement.id,
-            name: equipement.name,
-            state: cmd.state || 'unknown',
-            location_id: equipement.object_id,
-          })
+  try {
+    updateMemoryTimeout && clearTimeout(updateMemoryTimeout)
+    const locations = []
+    const lights = []
+    const shutters = []
+    const plugins = await getPlugins()
+    const hasPlugin = plugins.some(
+      (plugin) => plugin.id === 'virtual' && plugin.source === 'market',
+    )
+    if (!hasPlugin) {
+      console.error('The plugin "Virtual" from the Jeedom Market must be installed and enabled.')
+    }
+    const objects = await getObjects()
+    for (const object of objects) {
+      locations.push({
+        id: object.id,
+        name: object.name,
+        location_id: object.father_id,
+      })
+      if (!object.eqLogics.length) continue
+      for (const equipement of object.eqLogics) {
+        if (equipement.eqType_name !== 'virtual') continue
+        cmds.set(equipement.id, equipement.cmds)
+        for (const cmd of equipement.cmds) {
+          if (cmd.generic_type === 'LIGHT_STATE') {
+            lights.push({
+              id: equipement.id,
+              name: equipement.name,
+              state: cmd.state ? 'on' : 'off',
+              location_id: equipement.object_id,
+            })
+          }
+          if (cmd.generic_type === 'FLAP_STATE') {
+            shutters.push({
+              id: equipement.id,
+              name: equipement.name,
+              state: cmd.state || 'unknown',
+              location_id: equipement.object_id,
+            })
+          }
         }
       }
     }
+    const instructions = [baseInstructions]
+    if (!lights.length && !shutters.length) {
+      instructions.push(defaultInstructions)
+    } else {
+      instructions.push('``` yaml')
+      instructions.push(
+        yaml.dump({
+          locationsModel,
+          lightsModel,
+          shuttersModel,
+          locations,
+          lights,
+          shutters,
+        }),
+      )
+      instructions.push('```')
+    }
+    extension.setInstructions(instructions.join('\n'))
+    const functionSchemas = []
+    if (lights.length) {
+      functionSchemas.push(updateLightsFunction)
+    }
+    if (shutters.length) {
+      functionSchemas.push(updateShuttersFunction)
+    }
+    extension.setFunctionSchemas(functionSchemas)
+  } catch (err) {
+    if (!extension.isEnabled()) return
+    console.error(err.message)
   }
-  const instructions = [baseInstructions]
-  if (!lights.length && !shutters.length) {
-    instructions.push(defaultInstructions)
-  } else {
-    instructions.push('``` yaml')
-    instructions.push(
-      yaml.dump({
-        locationsModel,
-        lightsModel,
-        shuttersModel,
-        locations,
-        lights,
-        shutters,
-      }),
-    )
-    instructions.push('```')
-  }
-  extension.setInstructions(instructions.join('\n'))
-  const functionSchemas = []
-  if (lights.length) {
-    functionSchemas.push(updateLightsFunction)
-  }
-  if (shutters.length) {
-    functionSchemas.push(updateShuttersFunction)
-  }
-  extension.setFunctionSchemas(functionSchemas)
   updateMemoryTimeout = setTimeout(updateMemory, 60000)
 }
 
