@@ -9,8 +9,8 @@
   "name": "Jeedom",
   "sdk": {
     "name": "nodejs",
-    "version": "2.15.4"
+    "version": "2.15.6"
   },
-  "softwareVersion": null,
+  "softwareVersion": "4.4.19",
   "website": "https://jeedom.com/"
 }

@@ -30,6 +30,34 @@ const extension = new Extension()
     'Map the virtual equipments states on real equipments.',
   ])
   .setParameters([baseUrl, apiKey])
+  .setFunctions([
+    async function update_lights(action, ids) {
+      try {
+        for (const id of ids) {
+          for (const cmd of cmds.get(parseInt(id))) {
+            if (cmd.generic_type !== `LIGHT_${action.toUpperCase()}`) continue
+            request('cmd::execCmd', { id: cmd.id })
+          }
+        }
+        return 'Done.'
+      } catch (err) {
+        return `Error: ${err.message}`
+      }
+    },
+    async function update_shutters(action, ids) {
+      try {
+        for (const id of ids) {
+          for (const cmd of cmds.get(parseInt(id))) {
+            if (cmd.generic_type !== `FLAP_${action.toUpperCase()}`) continue
+            request('cmd::execCmd', { id: cmd.id })
+          }
+        }
+        return 'Done.'
+      } catch (err) {
+        return `Error: ${err.message}`
+      }
+    },
+  ])
   .start()
 
 const baseInstructions = `
@@ -89,7 +117,10 @@ const getObjects = async () => {
 }
 
 const cmds = new Map()
-async function refresh() {
+
+let updateMemoryTimeout = null
+async function updateMemory() {
+  updateMemoryTimeout && clearTimeout(updateMemoryTimeout)
   const locations = []
   const lights = []
   const shutters = []
@@ -130,9 +161,7 @@ async function refresh() {
       }
     }
   }
-
   const instructions = [baseInstructions]
-
   if (!lights.length && !shutters.length) {
     instructions.push(defaultInstructions)
   } else {
@@ -150,7 +179,6 @@ async function refresh() {
     instructions.push('```')
   }
   extension.setInstructions(instructions.join('\n'))
-
   const functionSchemas = []
   if (lights.length) {
     functionSchemas.push(updateLightsFunction)
@@ -159,37 +187,7 @@ async function refresh() {
     functionSchemas.push(updateShuttersFunction)
   }
   extension.setFunctionSchemas(functionSchemas)
-
-  setTimeout(refresh, 60000)
+  updateMemoryTimeout = setTimeout(updateMemory, 60000)
 }
 
-extension.setFunctions([
-  async function update_lights(action, ids) {
-    try {
-      for (const id of ids) {
-        for (const cmd of cmds.get(parseInt(id))) {
-          if (cmd.generic_type !== `LIGHT_${action.toUpperCase()}`) continue
-          request('cmd::execCmd', { id: cmd.id })
-        }
-      }
-      return 'Done.'
-    } catch (err) {
-      return `Error: ${err.message}`
-    }
-  },
-  async function update_shutters(action, ids) {
-    try {
-      for (const id of ids) {
-        for (const cmd of cmds.get(parseInt(id))) {
-          if (cmd.generic_type !== `FLAP_${action.toUpperCase()}`) continue
-          request('cmd::execCmd', { id: cmd.id })
-        }
-      }
-      return 'Done.'
-    } catch (err) {
-      return `Error: ${err.message}`
-    }
-  },
-])
-
-extension.on('boot', refresh)
+extension.on('boot', updateMemory)
